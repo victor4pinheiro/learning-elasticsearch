@@ -3,13 +3,6 @@ FROM rust:1.75 AS builder
 
 WORKDIR /app
 
-# Install sccache and cargo-sccache
-RUN cargo install sccache cargo-sccache
-
-# Configure sccache
-ENV RUSTC_WRAPPER=sccache
-ENV SCCACHE_DIR=/sccache
-
 # Copy project files
 COPY Cargo.toml Cargo.lock ./
 
