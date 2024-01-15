@@ -1,22 +1,24 @@
 # Stage 1: Build environment
-FROM rust:1.75 AS builder
+FROM rust:1.75.0-slim-bookworm AS builder
 
 WORKDIR /app
 
 # Copy project files
-COPY Cargo.toml Cargo.lock ./
+COPY . .
 
 # Build the application with sccache caching
 RUN cargo build --release
 
 # Stage 2: Runtime environment
-FROM debian:buster-slim AS runner
+FROM debian:bookworm-slim AS runner
 
 WORKDIR /app
 
 # Copy the built binary from the previous stage
-COPY --from=builder /app/target/release/elasticsearch-learning /app/elasticsearch-learning
+COPY --from=builder /app/target/release/learning-elasticsearch /app
+
+# Expose the ports
+EXPOSE 8000
 
 # Run the application
-CMD ["/app/elasticsearch-learning"]
-
+CMD ["./learning-elasticsearch"]

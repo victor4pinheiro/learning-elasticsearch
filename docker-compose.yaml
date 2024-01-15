@@ -7,9 +7,7 @@ services:
     environment:
       - ELASTIC_PASSWORD=SuperSecret
     ports:
-      - "9200:9200"
-    volumes:
-      - esdata:/usr/share/elasticsearch/data
+      - 9200:9200
     networks:
       - elastic
 
@@ -17,28 +15,23 @@ services:
     image: docker.elastic.co/kibana/kibana:8.4.0
     container_name: kibana
     ports:
-      - "5601:5601"
+      - 5601:5601
     environment:
       ELASTICSEARCH_HOSTS: https://elasticsearch:9200
-      ELASTICSEARCH_USERNAME: elastic
       ELASTICSEARCH_PASSWORD: SuperSecret
     depends_on:
       - elasticsearch
     networks:
       - elastic
 
-  # Service to build and run your Rust application
   elasticsearch-learning:
-    build: .  # Build from the current directory (where your Dockerfile is)
+    build: .
+    depends_on:
+      - elasticsearch
     ports:
-      - "8000:8000"
-    volumes:
-      - ./data:/app/data  # Optional: Mount a local directory for persistent data
+      - 8000:8000
     networks:
       - elastic
-
-volumes:
-  esdata:
 
 networks:
   elastic:
